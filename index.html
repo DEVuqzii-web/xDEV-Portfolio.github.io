@@ -11,103 +11,149 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg-1:#0b0f18;         /* fond principal */
-      --bg-2:#121725;         /* panneaux */
-      --glass:#171c2caa;      /* verre */
-      --text:#e9edfb;
-      --text-dim:#b4c0de;
-      --primary:#70a2ff;      /* bleu clair */
-      --primary-2:#4c7dff;    /* bleu plus soutenu */
-      --accent:#a972ff;       /* violet */
+      --bg-1:#050507;
+      --bg-2:#0d0d0f;
+      --glass:#0e0b0baa;
+      --text:#f0e8e8;
+      --text-dim:#a89090;
+      --primary:#e03030;
+      --primary-2:#c01818;
+      --accent:#ff5555;
       --green:#36c288;
       --danger:#f36a6a;
-      --chip:#232b41;
-      --card-stroke: #5e6a89;
+      --chip:#1a0f0f;
+      --card-stroke:#5e2222;
       --radius-xl:24px;
       --radius-lg:18px;
       --radius-md:14px;
-      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --shadow: 0 20px 60px rgba(0,0,0,.6);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; color:var(--text); background:radial-gradient(1200px 600px at 70% -20%, #1c2744 0%, transparent 60%),
-      radial-gradient(900px 500px at -10% 20%, #231b38 0%, transparent 50%), var(--bg-1);
+      margin:0; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 70% -20%, #1a0505 0%, transparent 60%),
+        radial-gradient(900px 500px at -10% 20%, #1a0000 0%, transparent 50%),
+        var(--bg-1);
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
       line-height:1.5; overflow-x:hidden;
     }
-    /* décor: petites étoiles */
+
+    /* décor: petites étoiles rougeâtres */
     body:before{
       content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-      background-image: radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.12) 40%, transparent 41%),
-                        radial-gradient(2px 2px at 80% 10%, rgba(255,255,255,.12) 40%, transparent 41%),
-                        radial-gradient(2px 2px at 60% 80%, rgba(255,255,255,.09) 40%, transparent 41%),
-                        radial-gradient(1.5px 1.5px at 40% 60%, rgba(255,255,255,.09) 40%, transparent 41%);
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,80,80,.18) 40%, transparent 41%),
+        radial-gradient(2px 2px at 80% 10%, rgba(255,80,80,.13) 40%, transparent 41%),
+        radial-gradient(2px 2px at 60% 80%, rgba(255,80,80,.09) 40%, transparent 41%),
+        radial-gradient(1.5px 1.5px at 40% 60%, rgba(255,80,80,.09) 40%, transparent 41%);
       background-repeat:no-repeat;
     }
 
-    /* Intro / écran de bienvenue (CSS only) */
+    /* Scanline subtil pour atmosphère */
+    body:after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,.012) 2px, rgba(255,0,0,.012) 4px);
+    }
+
+    /* Intro */
     .intro{
-      position:fixed; inset:0; z-index:9999; display:grid; place-items:center; background:linear-gradient(180deg, rgba(10,12,20,.96), rgba(10,12,20,.9));
-      animation: introFade 2.8s ease 0.6s forwards; /* disparaît tout seul */
+      position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
+      background:linear-gradient(180deg, rgba(5,2,2,.98), rgba(5,2,2,.93));
+      animation: introFade 2.8s ease 0.6s forwards;
       backdrop-filter: blur(6px);
     }
     @keyframes introFade{ 60%{opacity:1} 100%{opacity:0; pointer-events:none; visibility:hidden} }
     .intro h1{ font: 900 clamp(30px,6vw,64px)/1 Poppins, Inter, sans-serif; letter-spacing:.5px; margin:0; position:relative; }
-    .intro h1 .gradient{ background: linear-gradient(90deg,var(--primary),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    /* écriture lettre par lettre */
+    .intro h1 .gradient{ background: linear-gradient(90deg,var(--accent),#ff2222); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .typewriter{ overflow:hidden; white-space:nowrap; border-right: .12em solid var(--primary); width:0; animation: typing 1.8s steps(30,end) forwards, blink .9s step-end infinite; }
     @keyframes typing{ to{ width:100% } }
     @keyframes blink{ 50%{ border-color:transparent } }
 
     .container{ width:min(1150px, 92vw); margin:0 auto; position:relative; z-index:1; }
+
     header.nav{
-      position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(8px);
-      background:linear-gradient(180deg, rgba(10,14,24,.78), rgba(10,14,24,.45)); border-bottom:1px solid rgba(135,153,196,.16);
+      position:sticky; top:0; z-index:50;
+      backdrop-filter:saturate(180%) blur(8px);
+      background:linear-gradient(180deg, rgba(5,2,2,.88), rgba(5,2,2,.55));
+      border-bottom:1px solid rgba(200,50,50,.2);
     }
     .nav .row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
     .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px; }
     .badge-dot{ width:10px; height:10px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); }
-    nav a{ color:var(--text-dim); text-decoration:none; margin:0 10px; font-weight:600; }
-    nav a:hover{ color:var(--text); }
+    nav a{ color:var(--text-dim); text-decoration:none; margin:0 10px; font-weight:600; transition:color .2s; }
+    nav a:hover{ color:var(--accent); }
 
     /* Hero */
     .hero{ padding: clamp(42px, 6vw, 72px) 0 40px; text-align:center; }
     .hero h1{ font: 900 clamp(30px,8vw,68px)/1.1 Poppins, Inter, sans-serif; margin:.1em 0 .3em; letter-spacing:.3px; }
-    .hero h1 em{ font-style:normal; background:linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero h1 em{ font-style:normal; background:linear-gradient(90deg, var(--accent) 0%, #ff2222 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
     /* Profile card */
-    .profile{ margin:26px auto 18px; width:min(860px, 100%); background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-              border:1px solid rgba(132,150,200,.18); border-radius:20px; padding:18px; display:flex; align-items:center; gap:18px; box-shadow: var(--shadow);
-              position:relative; }
-    .profile:before{ content:""; position:absolute; inset:-1px; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(122,161,255,.5), rgba(169,114,255,.45)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-    .avatar{ flex:0 0 92px; width:92px; height:92px; border-radius:20px; overflow:hidden; background: radial-gradient(65% 65% at 30% 30%, #ff7a7a, #b30000); border:1px solid rgba(255,255,255,.14); }
+    .profile{
+      margin:26px auto 18px; width:min(860px, 100%);
+      background: linear-gradient(180deg, rgba(180,20,20,.08), rgba(180,20,20,.03));
+      border:1px solid rgba(200,50,50,.22); border-radius:20px; padding:18px;
+      display:flex; align-items:center; gap:18px; box-shadow: var(--shadow), 0 0 40px rgba(180,0,0,.12);
+      position:relative;
+    }
+    .profile:before{
+      content:""; position:absolute; inset:-1px; border-radius:20px; padding:1px;
+      background:linear-gradient(135deg, rgba(220,50,50,.6), rgba(140,10,10,.5));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+    }
+    .avatar{ flex:0 0 92px; width:92px; height:92px; border-radius:20px; overflow:hidden; background: radial-gradient(65% 65% at 30% 30%, #ff3333, #7a0000); border:1px solid rgba(255,80,80,.2); }
     .avatar img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.1); }
     .p-col{ flex:1 1 auto; text-align:left; }
     .p-top{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
     .name{ font:800 28px/1 Poppins, Inter, sans-serif; }
-    .verified{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:linear-gradient(90deg,var(--primary),var(--accent)); color:#0b0f18; font-weight:800; font-size:13px; }
+    .verified{
+      display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
+      background:linear-gradient(90deg,var(--primary),#a00000);
+      color:#f5e0e0; font-weight:800; font-size:13px;
+    }
     .verified svg{ width:18px; height:18px; }
 
     .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-    .chip{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:var(--chip); color:var(--text); border:1px solid rgba(132,150,200,.22); font-weight:600; font-size:13px; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background:var(--chip); color:var(--text);
+      border:1px solid rgba(200,50,50,.28); font-weight:600; font-size:13px;
+    }
     .chip .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); }
 
     .about{ margin: 14px auto 26px; width:min(900px, 100%); color:var(--text-dim); font-size:clamp(15px, 2vw, 18px); }
     .about b{ color:var(--text); }
-    .about em{ font-style:normal; color:var(--primary); font-weight:700; }
+    .about em{ font-style:normal; color:var(--accent); font-weight:700; }
 
     /* CTA cards */
     .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:16px; }
-    .card{ grid-column: span 6; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); border:1px solid rgba(132,150,200,.18);
-           border-radius:20px; padding:20px; box-shadow: var(--shadow); position:relative; overflow:hidden; }
-    .card:after{ content:""; position:absolute; right:-60px; bottom:-60px; width:220px; height:220px; background: radial-gradient(closest-side, rgba(112,162,255,.35), transparent 70%); filter:blur(10px); }
+    .card{
+      grid-column: span 6;
+      background: linear-gradient(180deg, rgba(180,20,20,.07), rgba(180,20,20,.03));
+      border:1px solid rgba(200,50,50,.2); border-radius:20px; padding:20px;
+      box-shadow: var(--shadow); position:relative; overflow:hidden;
+    }
+    .card:after{
+      content:""; position:absolute; right:-60px; bottom:-60px; width:220px; height:220px;
+      background: radial-gradient(closest-side, rgba(200,30,30,.35), transparent 70%); filter:blur(10px);
+    }
     .card h3{ margin:0 0 8px; font:700 clamp(18px,2.2vw,22px)/1.2 Inter, sans-serif; }
     .card p{ margin:0 0 14px; color:var(--text-dim); }
-    .btn{ display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-          color:#0b0f18; text-decoration:none; font-weight:800; border:1px solid rgba(255,255,255,.22); cursor:pointer; }
-    .btn.secondary{ background:transparent; color:var(--text); border:1px solid rgba(132,150,200,.35); }
-    .btn:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px;
+      background: linear-gradient(90deg, var(--primary) 0%, #8b0000 100%);
+      color:#f5e0e0; text-decoration:none; font-weight:800;
+      border:1px solid rgba(255,80,80,.28); cursor:pointer;
+      transition: filter .2s, transform .2s;
+    }
+    .btn.secondary{
+      background:transparent; color:var(--text);
+      border:1px solid rgba(200,50,50,.35);
+    }
+    .btn:hover{ filter: brightness(1.15); transform: translateY(-1px); }
 
     /* Sections */
     section{ padding:64px 0; }
@@ -116,36 +162,73 @@
 
     /* Projects grid */
     .cards-3{ display:grid; grid-template-columns: repeat(12,1fr); gap:16px; }
-    .game{ grid-column: span 4; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(132,150,200,.18);
-           border-radius:18px; overflow:hidden; transition:transform .2s ease; }
-    .game:hover{ transform: translateY(-3px); }
-    .thumb{ aspect-ratio: 16/9; background:linear-gradient(135deg, #1a2033, #202746); }
+    .game{
+      grid-column: span 4;
+      background: linear-gradient(180deg, rgba(180,20,20,.06), rgba(180,20,20,.02));
+      border:1px solid rgba(200,50,50,.18); border-radius:18px; overflow:hidden;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .game:hover{ transform: translateY(-3px); box-shadow: 0 0 28px rgba(200,30,30,.2); }
+    .thumb{ aspect-ratio: 16/9; background:linear-gradient(135deg, #1a0505, #200a0a); }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .game .body{ padding:14px 14px 16px; }
     .meta{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
-    .meta .tag{ background:var(--chip); color:var(--text); border:1px solid rgba(132,150,200,.22); padding:6px 10px; font-weight:600; border-radius:999px; font-size:12px; }
+    .meta .tag{
+      background:var(--chip); color:var(--text);
+      border:1px solid rgba(200,50,50,.25); padding:6px 10px;
+      font-weight:600; border-radius:999px; font-size:12px;
+    }
 
     /* Services */
-    .service{ grid-column: span 4; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(132,150,200,.18); border-radius:18px; padding:18px; }
-    .service h4{ margin:4px 0 6px; font-weight:800; }
+    .service{
+      grid-column: span 4;
+      background: linear-gradient(180deg, rgba(180,20,20,.06), rgba(180,20,20,.02));
+      border:1px solid rgba(200,50,50,.18); border-radius:18px; padding:18px;
+      transition: box-shadow .2s;
+    }
+    .service:hover{ box-shadow: 0 0 24px rgba(200,30,30,.15); }
+    .service h4{ margin:4px 0 6px; font-weight:800; color:var(--accent); }
     .service p{ margin:0; color:var(--text-dim); }
 
-    /* ---- STATS (nouvelle section) ---- */
+    /* STATS */
     .stats{ padding-top: 28px; }
     .stat-grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:18px; width:min(1100px,100%); margin:0 auto; }
-    .stat{ grid-column: span 3; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); border:1px solid rgba(132,150,200,.18);
-           border-radius:22px; padding:22px 24px; display:flex; flex-direction:column; align-items:flex-start; gap:10px; position:relative; overflow:hidden; box-shadow:var(--shadow); }
-    .stat:after{ content:""; position:absolute; inset:-1px; border-radius:22px; padding:1px; background:linear-gradient(135deg, rgba(112,162,255,.45), rgba(169,114,255,.45)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity:.55; }
-    .stat .icon{ width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background: radial-gradient(80% 80% at 30% 20%, #6f86ff 0%, #8d5bff 60%, #5d35ff 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); position:relative; z-index:1; }
-    .stat .value{ font:800 clamp(22px,3.6vw,32px)/1 Poppins, Inter, sans-serif; letter-spacing:.3px; margin-top:2px; position:relative; z-index:1; }
+    .stat{
+      grid-column: span 3;
+      background: linear-gradient(180deg, rgba(180,20,20,.08), rgba(180,20,20,.03));
+      border:1px solid rgba(200,50,50,.2); border-radius:22px; padding:22px 24px;
+      display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+      position:relative; overflow:hidden; box-shadow:var(--shadow);
+      transition: box-shadow .2s;
+    }
+    .stat:hover{ box-shadow: var(--shadow), 0 0 30px rgba(200,30,30,.18); }
+    .stat:after{
+      content:""; position:absolute; inset:-1px; border-radius:22px; padding:1px;
+      background:linear-gradient(135deg, rgba(220,50,50,.5), rgba(100,10,10,.45));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; opacity:.6;
+    }
+    .stat .icon{
+      width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+      background: radial-gradient(80% 80% at 30% 20%, #e03030 0%, #8b0000 60%, #5a0000 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,120,120,.25), 0 0 14px rgba(200,30,30,.3);
+      position:relative; z-index:1;
+    }
+    .stat .value{ font:800 clamp(22px,3.6vw,32px)/1 Poppins, Inter, sans-serif; letter-spacing:.3px; margin-top:2px; position:relative; z-index:1; color:var(--accent); }
     .stat .label{ color:var(--text-dim); font-weight:600; position:relative; z-index:1; }
 
     /* Contact */
     .contact{ display:grid; grid-template-columns: 1fr; gap:16px; width:min(720px, 100%); margin:0 auto; }
     .contact .row{ display:flex; gap:10px; }
-    .input{ flex:1; padding:14px 16px; border-radius:12px; background:#12182b; border:1px solid rgba(132,150,200,.22); color:var(--text); }
+    .input{
+      flex:1; padding:14px 16px; border-radius:12px;
+      background:#0e0505; border:1px solid rgba(200,50,50,.28);
+      color:var(--text); outline:none; transition: border-color .2s;
+    }
+    .input:focus{ border-color: rgba(220,50,50,.6); }
 
     footer{ padding:32px 0 46px; color:var(--text-dim); text-align:center; opacity:.9; }
+    footer span{ color: var(--accent); }
 
     /* Responsive */
     @media (max-width: 1100px){
@@ -199,7 +282,6 @@
 
     <div class="profile" role="region" aria-label="Carte de profil">
       <div class="avatar" aria-hidden="true">
-        <!-- Remplace l'image ci-dessous par ton avatar -->
         <img src="https://image.noelshack.com/fichiers/2026/11/4/1773325321-53547fb0c8bce8f0af2a111d88185129.jpg" />
       </div>
       <div class="p-col">
@@ -215,7 +297,7 @@
           <span class="chip">UI/UX</span>
           <span class="chip">Lua Scripting</span>
           <span class="chip"><span class="dot"></span> Online</span>
-          <span class="chip">Discord : <b>https://discord.gg/tUEwHC6JR8</b></span>
+          <span class="chip">Discord : <b>https://discord.gg/T6GdFZD7X9</b></span>
         </div>
       </div>
     </div>
@@ -238,12 +320,11 @@
     </div>
   </section>
 
-  <!-- STATS (comme sur l'image) -->
+  <!-- STATS -->
   <section id="stats" class="stats container" aria-label="Statistiques clés">
     <div class="stat-grid">
       <div class="stat">
         <div class="icon" aria-hidden="true">
-          <!-- people icon -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M16 14c2.761 0 5 2.239 5 5v1H3v-1c0-2.761 2.239-5 5-5h8Zm-8-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm8 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="white" opacity=".9"/>
           </svg>
@@ -254,7 +335,6 @@
 
       <div class="stat">
         <div class="icon" aria-hidden="true">
-          <!-- heart icon -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 20s-7-4.534-7-10a4 4 0 0 1 7-2.646A4 4 0 0 1 19 10c0 5.466-7 10-7 10Z" fill="white" opacity=".9"/>
           </svg>
@@ -265,7 +345,6 @@
 
       <div class="stat">
         <div class="icon" aria-hidden="true">
-          <!-- trophy icon -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M6 4h12v3a4 4 0 0 1-4 4H10A4 4 0 0 1 6 7V4Zm5 7h2v3h-2v-3Zm-3 6h8v2H8v-2Z" fill="white" opacity=".9"/>
             <path d="M18 7h2a3 3 0 0 1-3 3V7ZM6 10A3 3 0 0 1 3 7h2v3Z" fill="white" opacity=".6"/>
@@ -277,7 +356,6 @@
 
       <div class="stat">
         <div class="icon" aria-hidden="true">
-          <!-- star icon -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 3l2.9 5.88 6.1.89-4.4 4.29 1.04 6.07L12 17.77 6.36 20.13 7.4 14.06 3 9.77l6.1-.89L12 3Z" fill="white" opacity=".9"/>
           </svg>
@@ -299,7 +377,6 @@
     </div>
 
     <div class="cards-3">
-      <!-- Card 1 -->
       <article class="game">
         <div class="thumb"><img src="https://image.noelshack.com/fichiers/2025/46/3/1762947984-2f24de6b-3ca7-4851-9839-89dd39cb37ea.jpg" alt="Aperçu jeu 1"/></div>
         <div class="body">
@@ -312,7 +389,6 @@
           </div>
         </div>
       </article>
-      <!-- Card 2 -->
       <article class="game">
         <div class="thumb"><img src="https://image.noelshack.com/fichiers/2025/46/3/1762948003-nofilter.png" alt="Aperçu jeu 2"/></div>
         <div class="body">
@@ -325,7 +401,6 @@
           </div>
         </div>
       </article>
-      <!-- Card 3 -->
       <article class="game">
         <div class="thumb"><img src="https://image.noelshack.com/fichiers/2025/46/4/1763050817-47c9f049-e5fa-4695-9f9f-d6262c81a1b8.jpg" alt="Aperçu jeu 3"/></div>
         <div class="body">
@@ -346,7 +421,7 @@
     <h2>UI & System</h2>
     <div class="cards-3">
       <article class="service">
-        <h4>“glass / neon” interfaces</h4>
+        <h4>"glass / neon" interfaces</h4>
         <p>HUD currency displays, help/admin panels, responsive shops, refined transitions.</p>
       </article>
       <article class="service">
@@ -392,8 +467,7 @@
         <button id="sendEmailBtn" class="btn" type="button">Send Email (Contact Me On Discord If Email Dont Works )</button>
         <a class="btn secondary" style="margin-left:8px" href="https://discord.gg/T6GdFZD7X9" target="_blank" rel="noopener">Contact On Discord</a>
         <noscript>
-          <!-- Fallback si JS désactivé -->
-          <a class="btn" href="zzxedev@gmail.com">Send Email</a>
+          <a class="btn" href="https://workspace.google.com/intl/fr/gmail/">Send Email</a>
         </noscript>
       </div>
     </div>
@@ -404,15 +478,13 @@
   </footer>
 
   <script>
-    // Année courante
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Envoi e-mail via mailto construit depuis le formulaire
     (function(){
       const btn = document.getElementById('sendEmailBtn');
       if(!btn) return;
 
-      const TO = 'mlgexpress.contact@gmail.com';
+      const TO = 'zzxedev@gmail.com';
 
       function validEmail(v){
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -441,20 +513,9 @@
           msg
         ];
         const mailto = `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-        // Ouvre le client mail de l'utilisateur
         window.location.href = mailto;
       });
     })();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
