@@ -370,7 +370,81 @@
     #back-top.visible{ opacity:1; transform:translateY(0); pointer-events:all; }
     #back-top:hover{ filter:brightness(1.2); }
 
-    /* RESPONSIVE */
+    /* ── CUSTOM CURSOR ── */
+    @media(pointer:fine){
+      *{ cursor:none !important; }
+    }
+    #cursor-dot{
+      position:fixed; top:0; left:0; z-index:99999; pointer-events:none;
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 12px rgba(255,85,85,.8), 0 0 24px rgba(255,85,85,.4);
+      transform:translate(-50%,-50%);
+      transition:transform .08s ease, width .15s ease, height .15s ease, opacity .15s;
+      mix-blend-mode:normal;
+    }
+    #cursor-ring{
+      position:fixed; top:0; left:0; z-index:99998; pointer-events:none;
+      width:32px; height:32px; border-radius:50%;
+      border:1.5px solid rgba(255,85,85,.5);
+      transform:translate(-50%,-50%);
+      transition:transform .18s ease, width .2s ease, height .2s ease, opacity .2s, border-color .2s;
+    }
+    #cursor-dot.clicking{ width:6px; height:6px; }
+    #cursor-ring.clicking{ width:22px; height:22px; border-color:rgba(255,85,85,.9); }
+    #cursor-dot.hovering{ width:14px; height:14px; background:var(--accent); }
+    #cursor-ring.hovering{ width:44px; height:44px; border-color:rgba(255,85,85,.7); }
+
+    /* ── PARTICLES CANVAS ── */
+    #particles-canvas{
+      position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.55;
+    }
+
+    /* ── LANGUAGE TOGGLE ── */
+    #lang-toggle{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 12px; border-radius:999px;
+      background:var(--chip); border:1px solid rgba(200,50,50,.28);
+      color:var(--text-dim); font-weight:700; font-size:13px; cursor:pointer;
+      transition:border-color .2s, color .2s;
+      flex-shrink:0;
+    }
+    #lang-toggle:hover{ border-color:rgba(200,50,50,.55); color:var(--text); }
+    #lang-toggle .flag{ font-size:15px; line-height:1; }
+
+    /* ── LAST ONLINE ── */
+    .last-online{
+      display:inline-flex; align-items:center; gap:7px;
+      padding:5px 12px; border-radius:999px; font-size:12px; font-weight:700;
+      background:rgba(88,101,242,.1); border:1px solid rgba(88,101,242,.22);
+      color:#a0aaff; margin-top:6px;
+    }
+    .last-online .dc-dot{ width:7px; height:7px; border-radius:50%; background:#36c288; box-shadow:0 0 5px #36c288; flex-shrink:0; }
+
+    /* ── WHY CHOOSE ME ── */
+    #why{ position:relative; }
+    #why:before{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(700px 350px at 50% 50%, rgba(180,20,20,.06), transparent 70%);
+    }
+    .why-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; width:min(900px,100%); margin:0 auto; }
+    .why-card{
+      background:linear-gradient(160deg,rgba(180,20,20,.08),rgba(180,20,20,.03));
+      border:1px solid rgba(200,50,50,.2); border-radius:20px; padding:24px 22px;
+      display:flex; align-items:flex-start; gap:16px;
+      transition:transform .2s, box-shadow .2s; position:relative; overflow:hidden;
+    }
+    .why-card:hover{ transform:translateY(-3px); box-shadow:0 0 28px rgba(200,30,30,.18); }
+    .why-card:after{ content:""; position:absolute; right:-40px; bottom:-40px; width:160px; height:160px; background:radial-gradient(closest-side,rgba(200,30,30,.2),transparent 70%); filter:blur(8px); pointer-events:none; }
+    .why-icon{
+      flex-shrink:0; width:48px; height:48px; border-radius:14px; display:grid; place-items:center;
+      background:radial-gradient(80% 80% at 30% 20%,#e03030 0%,#8b0000 60%,#5a0000 100%);
+      box-shadow:inset 0 0 0 1px rgba(255,120,120,.2), 0 0 14px rgba(200,30,30,.25);
+    }
+    .why-content h4{ margin:0 0 6px; font:800 17px/1.2 Poppins,Inter,sans-serif; color:var(--text); }
+    .why-content p{ margin:0; color:var(--text-dim); font-size:14px; line-height:1.6; }
+
+    /* ── RESPONSIVE ── */
     @media(max-width:1100px){
       .stat{ grid-column:span 6; }
       .dservice{ grid-column:span 6; }
@@ -387,6 +461,7 @@
       .discord-cta-actions{ justify-content:center; }
       .testi{ grid-column:span 6; }
       .pricing-grid{ grid-template-columns:1fr; width:min(420px,100%); }
+      .why-grid{ grid-template-columns:1fr; }
     }
     @media(max-width:640px){
       .hero{ padding-top:28px; }
@@ -407,6 +482,13 @@
     <h1><span class="typewriter"><span class="gradient">Welcome</span> — Portfolio</span></h1>
   </div>
 
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- PARTICLES -->
+  <canvas id="particles-canvas"></canvas>
+
   <!-- BACK TO TOP -->
   <button id="back-top" aria-label="Back to top">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -422,15 +504,20 @@
         <span><strong>Roblox</strong> Dev</span>
       </div>
       <nav>
-        <a href="#stats">Stats</a>
-        <a href="#games">Games</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#services">Services</a>
+        <a href="#stats" data-i18n="nav_stats">Stats</a>
+        <a href="#games" data-i18n="nav_games">Games</a>
+        <a href="#portfolio" data-i18n="nav_portfolio">Portfolio</a>
+        <a href="#services" data-i18n="nav_services">Services</a>
         <a href="#discord-bots">Discord Bots</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#testimonials">Reviews</a>
-        <a href="#contact">Contact</a>
+        <a href="#why" data-i18n="nav_why">Why Me</a>
+        <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
+        <a href="#testimonials" data-i18n="nav_reviews">Reviews</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
       </nav>
+      <button id="lang-toggle" title="Change language">
+        <span class="flag" id="lang-flag">🇫🇷</span>
+        <span id="lang-label">FR</span>
+      </button>
     </div>
   </header>
 
@@ -455,11 +542,11 @@
           </div>
         </div>
         <div class="chips">
-          <span class="chip">Developer</span>
-          <span class="chip">UI/UX</span>
+          <span class="chip" data-i18n="chip_dev">Developer</span>
+          <span class="chip" data-i18n="chip_ui">UI/UX</span>
           <span class="chip">Lua Scripting</span>
           <span class="chip">Discord Bots</span>
-          <span class="chip"><span class="dot"></span> Online</span>
+          <span class="chip"><span class="dot"></span> <span data-i18n="chip_online">Online</span></span>
           <span class="chip chip-discord" id="discordChip" title="Click to copy">
             <svg class="copy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none">
               <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
@@ -468,6 +555,10 @@
             discord.gg/T6GdFZD7X9
             <span class="copy-toast">✓ Copied!</span>
           </span>
+        </div>
+        <div class="last-online">
+          <span class="dc-dot"></span>
+          <span id="last-online-text">Last seen on Discord: <b>today</b></span>
         </div>
       </div>
     </div>
@@ -598,6 +689,65 @@
         <a class="btn discord-btn" href="https://discord.gg/T6GdFZD7X9" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03Z" fill="white"/></svg>Contact on Discord</a>
         <a class="btn secondary" href="#contact">Get a quote</a>
       </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE ME -->
+  <section id="why" class="container">
+    <h2 data-i18n="why_title">Why choose me?</h2>
+    <p style="text-align:center;color:var(--text-dim);margin:-10px 0 32px;font-size:15px;" data-i18n="why_sub">Here's what makes me different from other developers.</p>
+    <div class="why-grid">
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8Z" fill="white" opacity=".9"/>
+          </svg>
+        </div>
+        <div class="why-content">
+          <h4 data-i18n="why1_title">Fast Delivery</h4>
+          <p data-i18n="why1_desc">I work efficiently and respect deadlines. Most projects are delivered ahead of schedule — no long waits, no empty promises.</p>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5Zm0 12c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4Z" fill="white" opacity=".85"/>
+            <path d="M19 8l2 2-6 6-3-3 2-2 1 1 4-4Z" fill="white" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="why-content">
+          <h4 data-i18n="why2_title">Clean & Maintainable Code</h4>
+          <p data-i18n="why2_desc">No spaghetti code. Everything is modular, well-commented, and easy to extend. You own what I build — no black boxes.</p>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9Zm1 13h-2v-6h2v6Zm0-8h-2V6h2v2Z" fill="white" opacity=".9"/>
+          </svg>
+        </div>
+        <div class="why-content">
+          <h4 data-i18n="why3_title">Real Experience, Proven Results</h4>
+          <p data-i18n="why3_desc">51M+ visits across projects I've worked on. I know what players expect and how to build systems that scale and perform.</p>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.8" fill="none" opacity=".85"/>
+            <path d="M7 10h10M7 14h6" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="why-content">
+          <h4 data-i18n="why4_title">Always Communicating</h4>
+          <p data-i18n="why4_desc">I stay active on Discord and keep you updated throughout. If something needs adjusting, just say so — revisions are part of the deal.</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -737,7 +887,7 @@
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // EMAIL
+    // ── EMAIL ──
     (function(){
       const btn = document.getElementById('sendEmailBtn');
       if(!btn) return;
@@ -755,16 +905,15 @@
       });
     })();
 
-    // COPY DISCORD
+    // ── COPY DISCORD ──
     (function(){
       const chip = document.getElementById('discordChip');
       if(!chip) return;
       chip.addEventListener('click', function(){
         const text = 'https://discord.gg/T6GdFZD7X9';
         function showToast(){ chip.classList.add('copied'); setTimeout(function(){ chip.classList.remove('copied'); }, 2200); }
-        if(navigator.clipboard){
-          navigator.clipboard.writeText(text).then(showToast).catch(showToast);
-        } else {
+        if(navigator.clipboard){ navigator.clipboard.writeText(text).then(showToast).catch(showToast); }
+        else {
           var ta = document.createElement('textarea');
           ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
           document.body.appendChild(ta); ta.select(); document.execCommand('copy');
@@ -773,7 +922,7 @@
       });
     })();
 
-    // BACK TO TOP
+    // ── BACK TO TOP ──
     (function(){
       const btn = document.getElementById('back-top');
       if(!btn) return;
@@ -781,7 +930,7 @@
       btn.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
     })();
 
-    // ANIMATED COUNTERS
+    // ── ANIMATED COUNTERS ──
     (function(){
       const els = document.querySelectorAll('.stat .value[data-target]');
       if(!els.length || !window.IntersectionObserver) return;
@@ -789,8 +938,7 @@
       function animate(el){
         const target = parseInt(el.dataset.target, 10);
         const suffix = el.dataset.suffix || '';
-        const dur = 1500;
-        const t0 = performance.now();
+        const dur = 1500; const t0 = performance.now();
         (function step(now){
           var p = Math.min((now - t0) / dur, 1);
           el.textContent = Math.round(easeOut(p) * target) + suffix;
@@ -802,6 +950,213 @@
         entries.forEach(function(e){ if(e.isIntersecting){ animate(e.target); obs.unobserve(e.target); } });
       }, { threshold: 0.6 });
       els.forEach(function(el){ obs.observe(el); });
+    })();
+
+    // ── CUSTOM CURSOR ──
+    (function(){
+      var dot = document.getElementById('cursor-dot');
+      var ring = document.getElementById('cursor-ring');
+      if(!dot || !ring) return;
+      // Only on pointer-fine devices
+      if(!window.matchMedia('(pointer:fine)').matches) return;
+
+      var mx = -200, my = -200, rx = -200, ry = -200;
+      var clicking = false;
+
+      document.addEventListener('mousemove', function(e){
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx+'px'; dot.style.top = my+'px';
+      });
+
+      // Ring lags slightly behind
+      (function lerpRing(){
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx+'px'; ring.style.top = ry+'px';
+        requestAnimationFrame(lerpRing);
+      })();
+
+      document.addEventListener('mousedown', function(){ clicking=true; dot.classList.add('clicking'); ring.classList.add('clicking'); });
+      document.addEventListener('mouseup',   function(){ clicking=false; dot.classList.remove('clicking'); ring.classList.remove('clicking'); });
+
+      // Hover on interactive elements
+      var hoverEls = document.querySelectorAll('a,button,.btn,.chip,.bot-card,.game,.pricing-card,.testi,.why-card,.service,.dservice');
+      hoverEls.forEach(function(el){
+        el.addEventListener('mouseenter', function(){ dot.classList.add('hovering'); ring.classList.add('hovering'); });
+        el.addEventListener('mouseleave', function(){ dot.classList.remove('hovering'); ring.classList.remove('hovering'); });
+      });
+    })();
+
+    // ── PARTICLES ──
+    (function(){
+      var canvas = document.getElementById('particles-canvas');
+      if(!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var W, H, particles = [];
+      var COLORS = ['rgba(255,85,85,', 'rgba(224,48,48,', 'rgba(255,120,80,', 'rgba(88,101,242,'];
+
+      function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      window.addEventListener('resize', resize, { passive:true }); resize();
+
+      function Particle(){
+        this.reset();
+      }
+      Particle.prototype.reset = function(){
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 1.6 + 0.4;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = -Math.random() * 0.4 - 0.1;
+        this.alpha = Math.random() * 0.5 + 0.1;
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      };
+      Particle.prototype.update = function(){
+        this.x += this.vx; this.y += this.vy;
+        this.alpha -= 0.0008;
+        if(this.y < -10 || this.alpha <= 0) this.reset();
+      };
+      Particle.prototype.draw = function(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+        ctx.fillStyle = this.color + this.alpha + ')';
+        ctx.fill();
+      };
+
+      var COUNT = 90;
+      for(var i=0; i<COUNT; i++){ var p = new Particle(); p.y = Math.random()*H; particles.push(p); }
+
+      function frame(){
+        ctx.clearRect(0,0,W,H);
+        particles.forEach(function(p){ p.update(); p.draw(); });
+        requestAnimationFrame(frame);
+      }
+      frame();
+    })();
+
+    // ── LAST ONLINE (simulated — update manually) ──
+    (function(){
+      // Change this string to reflect your real last activity
+      var LAST = 'today'; // e.g. "today", "yesterday", "2 hours ago"
+      var el = document.getElementById('last-online-text');
+      if(el){
+        el.innerHTML = 'Last seen on Discord: <b>' + LAST + '</b>';
+      }
+    })();
+
+    // ── LANGUAGE TOGGLE (EN / FR) ──
+    (function(){
+      var btn = document.getElementById('lang-toggle');
+      var flag = document.getElementById('lang-flag');
+      var label = document.getElementById('lang-label');
+      if(!btn) return;
+
+      var lang = 'en';
+
+      var T = {
+        en: {
+          nav_stats:'Stats', nav_games:'Games', nav_portfolio:'Portfolio',
+          nav_services:'Services', nav_why:'Why Me', nav_pricing:'Pricing',
+          nav_reviews:'Reviews', nav_contact:'Contact',
+          chip_dev:'Developer', chip_ui:'UI/UX', chip_online:'Online',
+          hero_title:'Roblox Developer',
+          about:'Im a <b>Roblox Developer</b> specialized in <em>scripting</em> and <em>3D Model</em>, with 1+ years of experience. I worked on games <b>French Island</b>, <b>Mansion Life Tycoon</b> and <b>Kat X</b> and some others, totalizing <b>51M+</b> visits.',
+          available:'Available for commissions',
+          cta1_title:"Games I've Worked On", cta1_desc:'Discover detailed project sheets, figures and responsibilities.', cta1_btn:'View My games →',
+          cta2_title:'My Work Portfolio', cta2_desc:'UI, gameplay systems, internal tools and video demonstrations.', cta2_btn:'Explore the portfolio',
+          section_games:'Featured games', section_portfolio:'UI & System', section_services:'What I propose',
+          why_title:'Why choose me?', why_sub:"Here's what makes me different from other developers.",
+          why1_title:'Fast Delivery', why1_desc:'I work efficiently and respect deadlines. Most projects are delivered ahead of schedule — no long waits, no empty promises.',
+          why2_title:'Clean & Maintainable Code', why2_desc:'No spaghetti code. Everything is modular, well-commented, and easy to extend. You own what I build — no black boxes.',
+          why3_title:'Real Experience, Proven Results', why3_desc:'51M+ visits across projects I\'ve worked on. I know what players expect and how to build systems that scale and perform.',
+          why4_title:'Always Communicating', why4_desc:'I stay active on Discord and keep you updated throughout. If something needs adjusting, just say so — revisions are part of the deal.',
+          section_pricing:'Pricing', pricing_sub:'All prices in Robux or USD — negotiable depending on project scope.',
+          section_reviews:'What clients say', reviews_sub:'Real feedback from Discord & Roblox collaborators.',
+          section_contact:'Contact me', contact_btn:'Send Email (Contact On Discord If It Doesn\'t Work)', contact_discord:'Contact On Discord',
+          name_ph:'Your Username', email_ph:'Your Email', msg_ph:'Describe your project (genre, features, deadlines, bot type...)...',
+        },
+        fr: {
+          nav_stats:'Stats', nav_games:'Jeux', nav_portfolio:'Portfolio',
+          nav_services:'Services', nav_why:'Pourquoi moi', nav_pricing:'Tarifs',
+          nav_reviews:'Avis', nav_contact:'Contact',
+          chip_dev:'Développeur', chip_ui:'UI/UX', chip_online:'En ligne',
+          hero_title:'Développeur Roblox',
+          about:'Je suis un <b>Développeur Roblox</b> spécialisé en <em>scripting</em> et <em>modélisation 3D</em>, avec plus d\'1 an d\'expérience. J\'ai travaillé sur <b>French Island</b>, <b>Mansion Life Tycoon</b> et <b>Kat X</b> entre autres, totalisant <b>51M+</b> visites.',
+          available:'Disponible pour des commandes',
+          cta1_title:'Jeux sur lesquels j\'ai travaillé', cta1_desc:'Découvre les fiches de projet, les chiffres et les responsabilités.', cta1_btn:'Voir mes jeux →',
+          cta2_title:'Mon portfolio', cta2_desc:'UI, systèmes de gameplay, outils internes et démos vidéo.', cta2_btn:'Explorer le portfolio',
+          section_games:'Jeux en vedette', section_portfolio:'UI & Système', section_services:'Ce que je propose',
+          why_title:'Pourquoi me choisir ?', why_sub:'Voici ce qui me distingue des autres développeurs.',
+          why1_title:'Livraison rapide', why1_desc:'Je travaille efficacement et respecte les délais. La plupart des projets sont livrés en avance — pas d\'attente interminable.',
+          why2_title:'Code propre & maintenable', why2_desc:'Pas de code spaghetti. Tout est modulaire, commenté et facile à étendre. Tu possèdes ce que je construis.',
+          why3_title:'Expérience réelle, résultats prouvés', why3_desc:'51M+ visites sur mes projets. Je sais ce qu\'attendent les joueurs et comment construire des systèmes qui scalent.',
+          why4_title:'Communication permanente', why4_desc:'Je suis actif sur Discord et te tiens informé. Si quelque chose doit être ajusté, dis-le — les révisions font partie du deal.',
+          section_pricing:'Tarifs', pricing_sub:'Prix en Robux ou USD — négociable selon la portée du projet.',
+          section_reviews:'Ce que disent les clients', reviews_sub:'Retours réels de collaborateurs Discord & Roblox.',
+          section_contact:'Me contacter', contact_btn:'Envoyer un email (Contact Discord si ça marche pas)', contact_discord:'Contacter sur Discord',
+          name_ph:'Ton pseudo', email_ph:'Ton email', msg_ph:'Décris ton projet (genre, fonctionnalités, délais, type de bot)...',
+        }
+      };
+
+      function applyLang(l){
+        var t = T[l];
+        // data-i18n elements
+        document.querySelectorAll('[data-i18n]').forEach(function(el){
+          var k = el.getAttribute('data-i18n');
+          if(t[k] !== undefined) el.innerHTML = t[k];
+        });
+        // Special cases
+        var heroH1 = document.querySelector('.hero h1 em');
+        if(heroH1) heroH1.textContent = t.hero_title;
+        var ab = document.querySelector('.about');
+        if(ab) ab.innerHTML = t.about;
+        var avail = document.querySelector('.available-badge');
+        if(avail){ avail.innerHTML = '<span class="dot-pulse"></span>' + t.available; }
+        // CTA cards
+        var cards = document.querySelectorAll('.grid .card');
+        if(cards[0]){
+          cards[0].querySelector('h3').textContent = t.cta1_title;
+          cards[0].querySelector('p').textContent = t.cta1_desc;
+          cards[0].querySelector('a').textContent = t.cta1_btn;
+        }
+        if(cards[1]){
+          cards[1].querySelector('h3').textContent = t.cta2_title;
+          cards[1].querySelector('p').textContent = t.cta2_desc;
+          cards[1].querySelector('a').textContent = t.cta2_btn;
+        }
+        // Section titles
+        var secs = [
+          ['#games h2', 'section_games'],['#portfolio h2','section_portfolio'],['#services h2','section_services'],
+          ['#pricing h2','section_pricing'],['#testimonials h2','section_reviews'],['#contact h2','section_contact']
+        ];
+        secs.forEach(function(s){
+          var el = document.querySelector(s[0]);
+          if(el) el.textContent = t[s[1]];
+        });
+        // Pricing subtitle
+        var psub = document.querySelector('#pricing > p');
+        if(psub) psub.textContent = t.pricing_sub;
+        // Reviews subtitle
+        var rsub = document.querySelector('#testimonials > p');
+        if(rsub) rsub.innerHTML = t.reviews_sub;
+        // Contact
+        var sbtn = document.getElementById('sendEmailBtn');
+        if(sbtn) sbtn.textContent = t.contact_btn;
+        var dbtn = document.querySelector('#contact .btn.secondary');
+        if(dbtn) dbtn.textContent = t.contact_discord;
+        var namein = document.getElementById('name');
+        if(namein) namein.placeholder = t.name_ph;
+        var emailin = document.getElementById('email');
+        if(emailin) emailin.placeholder = t.email_ph;
+        var msgin = document.getElementById('message');
+        if(msgin) msgin.placeholder = t.msg_ph;
+      }
+
+      btn.addEventListener('click', function(){
+        lang = lang === 'en' ? 'fr' : 'en';
+        flag.textContent = lang === 'en' ? '🇫🇷' : '🇬🇧';
+        label.textContent = lang === 'en' ? 'FR' : 'EN';
+        applyLang(lang);
+      });
     })();
   </script>
 </body>
