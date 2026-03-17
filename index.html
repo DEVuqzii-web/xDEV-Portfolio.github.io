@@ -466,6 +466,20 @@
     .dropdown-item.danger:hover{ background:rgba(243,106,106,.1); color:var(--danger); }
     .dropdown-divider{ height:1px; background:rgba(200,50,50,.15); margin:4px 0; }
 
+    /* IMAGE UPLOAD */
+    .img-attach-btn{ display:grid; place-items:center; width:42px; height:42px; border-radius:12px; background:rgba(200,50,50,.1); border:1px solid rgba(200,50,50,.28); color:var(--text-dim); cursor:pointer; flex-shrink:0; align-self:flex-end; transition:background .2s,color .2s,border-color .2s; }
+    .img-attach-btn:hover{ background:rgba(200,50,50,.2); color:var(--accent); border-color:rgba(200,50,50,.5); }
+    .msg-img-preview{ display:flex; flex-wrap:wrap; gap:8px; padding:10px 20px 0; }
+    .preview-item{ position:relative; width:80px; height:80px; border-radius:10px; overflow:hidden; border:1px solid rgba(200,50,50,.3); flex-shrink:0; }
+    .preview-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .preview-remove{ position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:rgba(0,0,0,.7); border:none; color:#fff; font-size:11px; font-weight:800; cursor:pointer; display:grid; place-items:center; line-height:1; padding:0; }
+    .preview-remove:hover{ background:var(--danger); }
+    .bubble-img{ max-width:220px; max-height:200px; border-radius:10px; display:block; cursor:pointer; margin-top:6px; border:1px solid rgba(200,50,50,.2); transition:transform .15s; }
+    .bubble.img-only{ background:transparent !important; border:none !important; padding:0 !important; }
+    .bubble-img:hover{ transform:scale(1.02); }
+    .img-lightbox{ position:fixed; inset:0; z-index:99000; background:rgba(0,0,0,.88); display:grid; place-items:center; cursor:zoom-out; backdrop-filter:blur(6px); }
+    .img-lightbox img{ max-width:90vw; max-height:90vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.8); }
+
     /* SCROLLBAR */
     ::-webkit-scrollbar{ width:6px; }
     ::-webkit-scrollbar-track{ background:transparent; }
@@ -589,6 +603,18 @@
         <label>Message</label>
         <textarea class="input" id="newmsg-body" rows="5" placeholder="Describe your project, budget, timeline..." style="width:100%;resize:vertical;font-family:inherit;font-size:14px;"></textarea>
       </div>
+      <div class="field">
+        <label>Images <span style="font-weight:400;opacity:.6;">(optional)</span></label>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label class="img-attach-btn" for="newmsg-img-input" style="width:auto;padding:8px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Add images
+            <input type="file" id="newmsg-img-input" accept="image/*" multiple style="display:none;"/>
+          </label>
+          <span id="newmsg-img-count" style="font-size:12px;color:var(--text-dim);"></span>
+        </div>
+        <div id="newmsg-img-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+      </div>
       <button class="btn" style="width:100%;justify-content:center;" id="newmsg-send-btn">Send Message</button>
     </div>
   </div>
@@ -648,7 +674,12 @@
             </div>
           </div>
           <div class="msg-body" id="msg-body"></div>
+          <div class="msg-img-preview" id="msg-img-preview"></div>
           <div class="msg-input-area">
+            <label class="img-attach-btn" for="img-upload-input" title="Attach image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              <input type="file" id="img-upload-input" accept="image/*" style="display:none;" multiple/>
+            </label>
             <textarea id="reply-input" placeholder="Write your reply..." rows="2"></textarea>
             <button class="msg-send-btn" id="reply-send-btn">Send</button>
           </div>
@@ -1502,16 +1533,74 @@
           var avatarClass = isAdminMsg ? 'bubble-avatar admin' : 'bubble-avatar';
           var bubbleClass = isMe ? 'bubble me' : (isAdminMsg ? 'bubble admin-bubble' : 'bubble');
           var adminTag = isAdminMsg ? '<span class="admin-badge" style="margin-left:6px;">👑 Admin</span>' : '';
+          var imgsHtml = '';
+          if(m.images && m.images.length > 0){
+            m.images.forEach(function(src){
+              imgsHtml += '<img src="'+src+'" class="bubble-img" onclick="window._openLightbox(this.src)" alt="image"/>';
+            });
+          }
+          var textHtml = m.text ? '<div class="'+bubbleClass+'">'+escapeHtml(m.text)+imgsHtml+'</div>' : (imgsHtml ? '<div class="'+bubbleClass+' img-only">'+imgsHtml+'</div>' : '');
           html += '<div class="bubble-wrap'+(isMe?' me':'')+'">' +
             '<div class="'+avatarClass+'">'+initials+'</div>'+
             '<div>'+
-              '<div class="'+bubbleClass+'">'+escapeHtml(m.text)+'</div>'+
+              textHtml+
               '<div class="bubble-meta">'+escapeHtml(m.sender)+adminTag+' · '+timeAgo(m.timestamp)+'</div>'+
             '</div>'+
           '</div>';
         });
         body.innerHTML = html;
         body.scrollTop = body.scrollHeight;
+      }
+
+      // Image upload setup
+      if(!window._pendingImages) window._pendingImages = {};
+      if(!window._pendingImages[t.id]) window._pendingImages[t.id] = [];
+      var imgInput = document.getElementById('img-upload-input');
+      var preview = document.getElementById('msg-img-preview');
+      preview.innerHTML = ''; preview.style.display = 'none';
+      // Re-render any existing pending previews for this thread
+      window._pendingImages[t.id].forEach(function(b64, idx){
+        var item = document.createElement('div');
+        item.className = 'preview-item';
+        item.innerHTML = '<img src="'+b64+'"/><button class="preview-remove" data-idx="'+idx+'">✕</button>';
+        item.querySelector('.preview-remove').addEventListener('click', function(){
+          window._pendingImages[t.id].splice(parseInt(this.dataset.idx), 1);
+          item.remove();
+          if(window._pendingImages[t.id].length === 0) preview.style.display = 'none';
+          preview.querySelectorAll('.preview-remove').forEach(function(btn, i){ btn.dataset.idx = i; });
+        });
+        preview.appendChild(item);
+        preview.style.display = 'flex';
+      });
+      if(imgInput) {
+        imgInput.onchange = null;
+        imgInput.value = '';
+        imgInput.addEventListener('change', function(){
+          var tid = t.id;
+          Array.from(this.files).forEach(function(file){
+            if(!file.type.startsWith('image/')) return;
+            if(file.size > 900*1024){ alert('Image too large (max 900KB).'); return; }
+            var reader = new FileReader();
+            reader.onload = function(e){
+              var b64 = e.target.result;
+              window._pendingImages[tid].push(b64);
+              var item = document.createElement('div');
+              item.className = 'preview-item';
+              var idx = window._pendingImages[tid].length - 1;
+              item.innerHTML = '<img src="'+b64+'"/><button class="preview-remove" data-idx="'+idx+'">✕</button>';
+              item.querySelector('.preview-remove').addEventListener('click', function(){
+                window._pendingImages[tid].splice(parseInt(this.dataset.idx), 1);
+                item.remove();
+                if(window._pendingImages[tid].length === 0) preview.style.display = 'none';
+                preview.querySelectorAll('.preview-remove').forEach(function(btn, i){ btn.dataset.idx = i; });
+              });
+              preview.appendChild(item);
+              preview.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+          });
+          this.value = '';
+        });
       }
 
       document.getElementById('reply-input').value = '';
@@ -1523,10 +1612,15 @@
 
     async function sendReply(tid){
       var input = document.getElementById('reply-input');
+      var preview = document.getElementById('msg-img-preview');
       var text = (input.value||'').trim();
-      if(!text) return;
+      var imgs = (window._pendingImages && window._pendingImages[tid]) ? window._pendingImages[tid].slice() : [];
+      if(!text && imgs.length === 0) return;
       input.value = '';
+      if(preview){ preview.innerHTML = ''; preview.style.display = 'none'; }
+      if(window._pendingImages) window._pendingImages[tid] = [];
       var msg = { sender: currentSession.username, text: text, timestamp: Date.now(), readByUser: isAdmin() };
+      if(imgs.length > 0) msg.images = imgs;
       await dbPushMessage(tid, msg);
       if(isAdmin()) await dbUpdateThread(tid, { readByAdmin: true });
     }
@@ -1536,11 +1630,51 @@
     document.getElementById('modal-newmsg-close').addEventListener('click', closeNewMsgModal);
     newMsgOverlay.addEventListener('click', function(e){ if(e.target===newMsgOverlay) closeNewMsgModal(); });
 
+    var newMsgImages = [];
+
+    function setupNewMsgImgInput(){
+      var inp = document.getElementById('newmsg-img-input');
+      var prev = document.getElementById('newmsg-img-preview');
+      var count = document.getElementById('newmsg-img-count');
+      if(!inp) return;
+      inp.addEventListener('change', function(){
+        Array.from(this.files).forEach(function(file){
+          if(!file.type.startsWith('image/')) return;
+          if(file.size > 900*1024){ alert('Image too large (max 900KB).'); return; }
+          var reader = new FileReader();
+          reader.onload = function(e){
+            var b64 = e.target.result;
+            newMsgImages.push(b64);
+            var item = document.createElement('div');
+            item.className = 'preview-item';
+            var idx = newMsgImages.length - 1;
+            item.innerHTML = '<img src="'+b64+'"/><button class="preview-remove" data-idx="'+idx+'">✕</button>';
+            item.querySelector('.preview-remove').addEventListener('click', function(){
+              newMsgImages.splice(parseInt(this.dataset.idx), 1);
+              item.remove();
+              prev.querySelectorAll('.preview-remove').forEach(function(btn,i){ btn.dataset.idx = i; });
+              count.textContent = newMsgImages.length > 0 ? newMsgImages.length+' image(s)' : '';
+            });
+            prev.appendChild(item);
+            count.textContent = newMsgImages.length+' image(s)';
+          };
+          reader.readAsDataURL(file);
+        });
+        this.value = '';
+      });
+    }
+    setupNewMsgImgInput();
+
     function openNewMsgModal(){
       newMsgOverlay.classList.add('open');
       document.getElementById('newmsg-subject').value = '';
       document.getElementById('newmsg-body').value = '';
       document.getElementById('newmsg-error').classList.remove('show');
+      newMsgImages = [];
+      var prev = document.getElementById('newmsg-img-preview');
+      var count = document.getElementById('newmsg-img-count');
+      if(prev) prev.innerHTML = '';
+      if(count) count.textContent = '';
     }
     function closeNewMsgModal(){ newMsgOverlay.classList.remove('open'); }
 
@@ -1548,20 +1682,28 @@
       if(!isLoggedIn()){ return; }
       var subject = (document.getElementById('newmsg-subject').value||'').trim();
       var bodyText = (document.getElementById('newmsg-body').value||'').trim();
-      if(!subject || !bodyText){
+      if(!subject && !bodyText && newMsgImages.length === 0){
         document.getElementById('newmsg-error').textContent = 'Please fill in subject and message.';
+        document.getElementById('newmsg-error').classList.add('show');
+        return;
+      }
+      if(!subject){
+        document.getElementById('newmsg-error').textContent = 'Please add a subject.';
         document.getElementById('newmsg-error').classList.add('show');
         return;
       }
       var now = Date.now();
       var id = 'thread_'+now+'_'+Math.random().toString(36).substr(2,6);
+      var firstMsg = { sender: currentSession.username, text: bodyText, timestamp: now, readByUser: false };
+      if(newMsgImages.length > 0) firstMsg.images = newMsgImages.slice();
       var thread = {
         id: id, username: currentSession.username, subject: subject,
         createdAt: now, updatedAt: now,
         readByAdmin: false,
-        messages: [{ sender: currentSession.username, text: bodyText, timestamp: now, readByUser: false }]
+        messages: [firstMsg]
       };
       await dbSaveThread(thread);
+      newMsgImages = [];
       closeNewMsgModal();
       currentThreadId = id;
     });
@@ -1583,6 +1725,16 @@
     /* ══════════════════════════════════════════
        HELPERS
     ══════════════════════════════════════════ */
+    // Lightbox
+    window._openLightbox = function(src){
+      var lb = document.createElement('div');
+      lb.className = 'img-lightbox';
+      lb.innerHTML = '<img src="'+src+'" alt="image"/>';
+      lb.addEventListener('click', function(){ document.body.removeChild(lb); });
+      document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ document.body.removeChild(lb); document.removeEventListener('keydown',esc); } });
+      document.body.appendChild(lb);
+    };
+
     function escapeHtml(str){
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
